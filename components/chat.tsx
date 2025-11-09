@@ -24,11 +24,10 @@ import type { Vote } from "@/lib/db/schema";
 import { ChatSDKError } from "@/lib/errors";
 import type { Attachment, ChatMessage } from "@/lib/types";
 import type { AppUsage } from "@/lib/usage";
-import { fetcher, fetchWithErrorHandlers, generateUUID } from "@/lib/utils";
+import { cn, fetcher, fetchWithErrorHandlers, generateUUID } from "@/lib/utils";
 import { Artifact } from "./artifact";
+import { ChatSideContainer } from "./chat-side-container";
 import { useDataStream } from "./data-stream-provider";
-import { Messages } from "./messages";
-import { MultimodalInput } from "./multimodal-input";
 import { getChatHistoryPaginationKey } from "./sidebar-history";
 import { toast } from "./toast";
 import type { VisibilityType } from "./visibility-selector";
@@ -146,6 +145,7 @@ export function Chat({
 
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const isArtifactVisible = useArtifactSelector((state) => state.isVisible);
+  const [isChatMinimized, setIsChatMinimized] = useState(false);
 
   useAutoResume({
     autoResume,
@@ -163,39 +163,43 @@ export function Chat({
           selectedVisibilityType={initialVisibilityType}
         />
 
-        <Messages
-          chatId={id}
-          isArtifactVisible={isArtifactVisible}
-          isReadonly={isReadonly}
-          messages={messages}
-          regenerate={regenerate}
-          selectedModelId={initialChatModel}
-          setMessages={setMessages}
-          status={status}
-          votes={votes}
-        />
-
-        <div className="sticky bottom-0 z-1 mx-auto flex w-full max-w-4xl gap-2 border-t-0 bg-background px-2 pb-3 md:px-4 md:pb-4">
-          {!isReadonly && (
-            <MultimodalInput
-              attachments={attachments}
-              chatId={id}
-              input={input}
-              messages={messages}
-              onModelChange={setCurrentModelId}
-              selectedModelId={currentModelId}
-              selectedVisibilityType={visibilityType}
-              sendMessage={sendMessage}
-              setAttachments={setAttachments}
-              setInput={setInput}
-              setMessages={setMessages}
-              status={status}
-              stop={stop}
-              usage={usage}
-            />
+        {/* Main content area - available for other purposes */}
+        <div
+          className={cn(
+            "flex-1 overflow-auto transition-[padding] duration-300 ease-in-out",
+            isChatMinimized ? "pr-[3rem]" : "pr-[28rem]"
           )}
+        >
+          {/* This area is now available for presenting data */}
+          <div className="mx-auto max-w-7xl px-4 py-8">
+            {/* Your content goes here */}
+          </div>
         </div>
       </div>
+
+      {/* Chat Side Container */}
+      <ChatSideContainer
+        attachments={attachments}
+        chatId={id}
+        input={input}
+        isArtifactVisible={isArtifactVisible}
+        isMinimized={isChatMinimized}
+        isReadonly={isReadonly}
+        messages={messages}
+        onMinimizedChange={setIsChatMinimized}
+        onModelChange={setCurrentModelId}
+        regenerate={regenerate}
+        selectedModelId={currentModelId}
+        selectedVisibilityType={visibilityType}
+        sendMessage={sendMessage}
+        setAttachments={setAttachments}
+        setInput={setInput}
+        setMessages={setMessages}
+        status={status}
+        stop={stop}
+        usage={usage}
+        votes={votes}
+      />
 
       <Artifact
         attachments={attachments}
