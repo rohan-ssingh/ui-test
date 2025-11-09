@@ -98,15 +98,22 @@ export const register = async (
 
     // Create user-profiles directory if it doesn't exist
     const profilesDir = join(process.cwd(), "user-profiles");
+    console.log("📁 Profile directory path:", profilesDir);
+    
     try {
       await mkdir(profilesDir, { recursive: true });
-    } catch {
+      console.log("✅ Directory created/verified:", profilesDir);
+    } catch (error) {
       // Directory might already exist, ignore error
+      console.log("⚠️ Directory might already exist:", error);
     }
 
     // Create filename from email (sanitize for filesystem)
     const sanitizedEmail = validatedData.email.replace(/[^a-zA-Z0-9]/g, "_");
     const filePath = join(profilesDir, `${sanitizedEmail}.txt`);
+    console.log("📄 Full file path:", filePath);
+    console.log("📧 User email:", validatedData.email);
+    console.log("🔤 Sanitized email:", sanitizedEmail);
 
     // Format the data for the text file (NO email/password)
     const fileContent = `User Profile Data
@@ -120,7 +127,22 @@ Locations: ${profileData.locations}
 Created At: ${profileData.createdAt}
 `;
 
-    await writeFile(filePath, fileContent, "utf-8");
+    console.log("💾 Saving profile data...");
+    console.log("📝 Profile data:", {
+      firstName: profileData.firstName,
+      lastName: profileData.lastName,
+      topics: profileData.topics,
+      readingLevel: profileData.readingLevel,
+      locations: profileData.locations,
+    });
+
+    try {
+      await writeFile(filePath, fileContent, "utf-8");
+      console.log("✅ Profile data successfully saved to:", filePath);
+    } catch (error) {
+      console.error("❌ Error saving profile data:", error);
+      throw error;
+    }
 
     // Sign in logic - UNCHANGED
     await signIn("credentials", {
