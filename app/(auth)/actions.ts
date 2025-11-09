@@ -57,19 +57,42 @@ export const register = async (
   _: RegisterActionState,
   formData: FormData
 ): Promise<RegisterActionState> => {
+  console.log("🚀 Register function called!");
+  console.log("📋 Form data received:");
+  
+  // Log all form data entries
+  const formEntries: Record<string, string | string[]> = {};
+  for (const [key, value] of formData.entries()) {
+    if (formEntries[key]) {
+      // Handle multiple values (like topics)
+      if (Array.isArray(formEntries[key])) {
+        (formEntries[key] as string[]).push(value as string);
+      } else {
+        formEntries[key] = [formEntries[key] as string, value as string];
+      }
+    } else {
+      formEntries[key] = value as string;
+    }
+  }
+  console.log("📋 Form entries:", formEntries);
+  
   try {
     // Email and password validation and database logic - UNCHANGED
     const validatedData = authFormSchema.parse({
       email: formData.get("email"),
       password: formData.get("password"),
     });
+    console.log("✅ Email/password validated:", validatedData.email);
 
     const [user] = await getUser(validatedData.email);
 
     if (user) {
+      console.log("⚠️ User already exists:", validatedData.email);
       return { status: "user_exists" } as RegisterActionState;
     }
+    console.log("👤 Creating user in database...");
     await createUser(validatedData.email, validatedData.password);
+    console.log("✅ User created in database");
 
     // Save profile data to .txt file (NOT email/password)
     const firstName = formData.get("firstName") as string | null;
@@ -145,18 +168,24 @@ Created At: ${profileData.createdAt}
     }
 
     // Sign in logic - UNCHANGED
+    console.log("🔐 Signing in user...");
     await signIn("credentials", {
       email: validatedData.email,
       password: validatedData.password,
       redirect: false,
     });
+    console.log("✅ User signed in");
 
+    console.log("🎉 Registration completed successfully!");
     return { status: "success" };
   } catch (error) {
+    console.error("❌ Registration error:", error);
     if (error instanceof z.ZodError) {
+      console.error("❌ Validation error:", error.errors);
       return { status: "invalid_data" };
     }
 
+    console.error("❌ Registration failed with error:", error);
     return { status: "failed" };
   }
 };
