@@ -61,7 +61,7 @@ export default function Page() {
 
   useEffect(() => {
     if (state.status === "user_exists") {
-      toast({ type: "error", description: "Account already exists!" });
+      toast({ type: "error", description: "Account created, please login!" });
     } else if (state.status === "failed") {
       toast({ type: "error", description: "Failed to create account!" });
     } else if (state.status === "invalid_data") {
