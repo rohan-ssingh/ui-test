@@ -44,7 +44,9 @@ function WelcomeSection() {
       {/* Top Bar with Relay */}
       <div className="mb-6 border-b border-border pb-4">
         <div className="flex items-center justify-center gap-2">
-          <h1 className="font-semibold text-xl text-foreground">Relay</h1>
+          <h1 className="bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70 bg-clip-text font-bold text-4xl tracking-tight text-transparent drop-shadow-sm">
+            Relay
+          </h1>
         </div>
       </div>
 
