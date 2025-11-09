@@ -79,6 +79,9 @@ export const register = async (
     const readingLevel = formData.get("readingLevel") as string | null;
     const locations = formData.get("locations") as string | null;
 
+    // Print reading level to console
+    console.log("Reading Level (in-depth answer):", readingLevel);
+
     const isOtherSelected = selectedTopics.includes("other");
     const allTopics = isOtherSelected && otherTopics
       ? [...selectedTopics.filter((t) => t !== "other"), otherTopics.trim()]
