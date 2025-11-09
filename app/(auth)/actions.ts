@@ -68,14 +68,15 @@ export const register = async (
     if (user) {
       return { status: "user_exists" } as RegisterActionState;
     }
-    await createUser(validatedData.email, validatedData.password);
+
+    const locations = formData.get("locations") as string | null;
+    await createUser(validatedData.email, validatedData.password, locations || undefined);
 
     const firstName = formData.get("firstName") as string | null;
     const lastName = formData.get("lastName") as string | null;
     const selectedTopics = formData.getAll("topics") as string[];
     const otherTopics = formData.get("otherTopics") as string | null;
     const readingLevel = formData.get("readingLevel") as string | null;
-    const locations = formData.get("locations") as string | null;
 
     const isOtherSelected = selectedTopics.includes("other");
     const allTopics = isOtherSelected && otherTopics
