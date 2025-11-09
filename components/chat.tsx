@@ -2,6 +2,7 @@
 
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
+import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
@@ -44,9 +45,33 @@ function WelcomeSection() {
       {/* Top Bar with Relay */}
       <div className="mb-6 border-b border-border pb-4">
         <div className="flex items-center justify-center gap-2">
-          <h1 className="bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70 bg-clip-text font-bold text-4xl tracking-tight text-transparent drop-shadow-sm">
-            Relay
-          </h1>
+          <div className="relative inline-block">
+            {/* Animated gradient background effect */}
+            <motion.div
+              animate={{
+                opacity: [0.4, 0.6, 0.4],
+              }}
+              className="absolute inset-0 -z-10 rounded-lg bg-gradient-to-r from-purple-500/30 via-pink-500/30 to-blue-500/30 blur-2xl"
+              transition={{
+                duration: 4,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: "easeInOut",
+              }}
+            />
+            <motion.h1
+              animate={{
+                scale: [1, 1.02, 1],
+              }}
+              className="relative bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70 bg-clip-text font-bold text-4xl tracking-tight text-transparent drop-shadow-sm"
+              transition={{
+                duration: 3,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: "easeInOut",
+              }}
+            >
+              Relay
+            </motion.h1>
+          </div>
         </div>
       </div>
 
