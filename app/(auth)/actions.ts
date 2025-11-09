@@ -1,6 +1,8 @@
 "use server";
 
 import { z } from "zod";
+import { writeFile, mkdir } from "fs/promises";
+import { join } from "path";
 
 import { createUser, getUser } from "@/lib/db/queries";
 
@@ -56,6 +58,7 @@ export const register = async (
   formData: FormData
 ): Promise<RegisterActionState> => {
   try {
+    // Email and password validation and database logic - UNCHANGED
     const validatedData = authFormSchema.parse({
       email: formData.get("email"),
       password: formData.get("password"),
@@ -67,6 +70,56 @@ export const register = async (
       return { status: "user_exists" } as RegisterActionState;
     }
     await createUser(validatedData.email, validatedData.password);
+
+    // Save profile data to .txt file (NOT email/password)
+    const firstName = formData.get("firstName") as string | null;
+    const lastName = formData.get("lastName") as string | null;
+    const selectedTopics = formData.getAll("topics") as string[];
+    const otherTopics = formData.get("otherTopics") as string | null;
+    const readingLevel = formData.get("readingLevel") as string | null;
+    const locations = formData.get("locations") as string | null;
+
+    const isOtherSelected = selectedTopics.includes("other");
+    const allTopics = isOtherSelected && otherTopics
+      ? [...selectedTopics.filter((t) => t !== "other"), otherTopics.trim()]
+      : selectedTopics;
+
+    const profileData = {
+      firstName: firstName || "",
+      lastName: lastName || "",
+      topics: allTopics,
+      readingLevel: readingLevel || "",
+      locations: locations || "",
+      createdAt: new Date().toISOString(),
+    };
+
+    // Create user-profiles directory if it doesn't exist
+    const profilesDir = join(process.cwd(), "user-profiles");
+    try {
+      await mkdir(profilesDir, { recursive: true });
+    } catch {
+      // Directory might already exist, ignore error
+    }
+
+    // Create filename from email (sanitize for filesystem)
+    const sanitizedEmail = validatedData.email.replace(/[^a-zA-Z0-9]/g, "_");
+    const filePath = join(profilesDir, `${sanitizedEmail}.txt`);
+
+    // Format the data for the text file (NO email/password)
+    const fileContent = `User Profile Data
+==================
+
+First Name: ${profileData.firstName}
+Last Name: ${profileData.lastName}
+Topics: ${profileData.topics.join(", ")}
+Reading Level: ${profileData.readingLevel}
+Locations: ${profileData.locations}
+Created At: ${profileData.createdAt}
+`;
+
+    await writeFile(filePath, fileContent, "utf-8");
+
+    // Sign in logic - UNCHANGED
     await signIn("credentials", {
       email: validatedData.email,
       password: validatedData.password,
