@@ -43,8 +43,8 @@ function WelcomeSection() {
     <div className="mx-auto max-w-7xl px-4 py-8">
       {/* Top Bar with Relay */}
       <div className="mb-6 border-b border-border pb-4">
-        <div className="flex items-center gap-2">
-          <h1 className="font-semibold text-lg text-foreground">Relay</h1>
+        <div className="flex items-center justify-center gap-2">
+          <h1 className="font-semibold text-xl text-foreground">Relay</h1>
         </div>
       </div>
 
