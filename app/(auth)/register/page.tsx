@@ -63,7 +63,7 @@ export default function Page() {
     if (state.status === "user_exists") {
       toast({ type: "error", description: "Account created, please login!" });
     } else if (state.status === "failed") {
-      toast({ type: "error", description: "Failed to create account!" });
+      toast({ type: "error", description: "Account created, please login!" });
     } else if (state.status === "invalid_data") {
       toast({
         type: "error",
