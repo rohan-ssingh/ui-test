@@ -46,25 +46,26 @@ function WelcomeSection() {
       <div className="mb-6 border-b border-border pb-4">
         <div className="flex items-center justify-center gap-2">
           <div className="relative inline-block">
-            {/* Animated gradient background effect */}
+            {/* Subtle animated gradient background effect */}
             <motion.div
               animate={{
-                opacity: [0.4, 0.6, 0.4],
+                opacity: [0.15, 0.25, 0.15],
+                scale: [1, 1.05, 1],
               }}
-              className="absolute inset-0 -z-10 rounded-lg bg-gradient-to-r from-purple-500/30 via-pink-500/30 to-blue-500/30 blur-2xl"
+              className="absolute inset-0 -z-10 rounded-lg bg-gradient-to-r from-zinc-400/20 via-zinc-300/15 to-zinc-400/20 blur-3xl"
               transition={{
-                duration: 4,
+                duration: 5,
                 repeat: Number.POSITIVE_INFINITY,
                 ease: "easeInOut",
               }}
             />
             <motion.h1
               animate={{
-                scale: [1, 1.02, 1],
+                scale: [1, 1.01, 1],
               }}
-              className="relative bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70 bg-clip-text font-bold text-4xl tracking-tight text-transparent drop-shadow-sm"
+              className="relative bg-gradient-to-r from-foreground via-foreground/95 to-foreground/85 bg-clip-text font-bold text-4xl tracking-tight text-transparent"
               transition={{
-                duration: 3,
+                duration: 4,
                 repeat: Number.POSITIVE_INFINITY,
                 ease: "easeInOut",
               }}
