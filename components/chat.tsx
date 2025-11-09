@@ -3,10 +3,12 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 import useSWR, { useSWRConfig } from "swr";
 import { unstable_serialize } from "swr/infinite";
 import { ChatHeader } from "@/components/chat-header";
+import { SparklesIcon } from "@/components/icons";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,6 +33,46 @@ import { useDataStream } from "./data-stream-provider";
 import { getChatHistoryPaginationKey } from "./sidebar-history";
 import { toast } from "./toast";
 import type { VisibilityType } from "./visibility-selector";
+
+function WelcomeSection() {
+  const { data: session } = useSession();
+  const userEmail = session?.user?.email ?? "";
+  const userName = userEmail.split("@")[0] || "there";
+
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-8">
+      {/* Top Bar with Relay */}
+      <div className="mb-6 border-b border-border pb-4">
+        <div className="flex items-center gap-2">
+          <h1 className="font-semibold text-lg text-foreground">Relay</h1>
+        </div>
+      </div>
+
+      {/* Welcome Message */}
+      <div className="mb-6">
+        <div className="mb-2 flex items-center gap-2">
+          <SparklesIcon size={20} />
+          <h2 className="font-semibold text-2xl text-foreground">
+            Hey {userName.charAt(0).toUpperCase() + userName.slice(1)}!
+          </h2>
+        </div>
+        <p className="text-muted-foreground text-lg">
+          Here are some interesting stories for you today.
+        </p>
+      </div>
+
+      {/* Static Introductory Text */}
+      <div className="rounded-lg border border-border bg-muted/30 p-6">
+        <p className="text-muted-foreground text-sm leading-relaxed">
+          Welcome to Relay! This is where you'll discover personalized content
+          tailored to your interests. We're working on bringing you the latest
+          stories and insights that matter most to you. Stay tuned for updates as
+          we continue to build out this experience.
+        </p>
+      </div>
+    </div>
+  );
+}
 
 export function Chat({
   id,
@@ -170,10 +212,8 @@ export function Chat({
             isChatMinimized ? "pr-[3rem]" : "pr-[28rem]"
           )}
         >
-          {/* This area is now available for presenting data */}
-          <div className="mx-auto max-w-7xl px-4 py-8">
-            {/* Your content goes here */}
-          </div>
+          {/* Welcome Section */}
+          <WelcomeSection />
         </div>
       </div>
 
